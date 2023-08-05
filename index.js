@@ -9,6 +9,7 @@ const APP = EXPRESS()
 // dependencies
 const CORS = require("cors")
 const initializeMongoose = require("./initDB.js")
+const rateLimiter = require("express-rate-limit")
 const PASSPORT = require("passport")
 
 // subrouters
@@ -22,7 +23,14 @@ const CORS_OPTIONS = {
   optionsSuccessStatus: 200,
 }
 
+// Define rate limiting options
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // maximum 100 requests per windowMs
+})
+
 // middleware
+app.use(limiter)
 APP.use(CORS(CORS_OPTIONS))
 APP.use(EXPRESS.json())
 APP.use(COOKIE_PARSER())
